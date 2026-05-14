@@ -2,17 +2,17 @@ terraform {
   required_version = ">= 1.6"
 
   backend "s3" {
-    bucket         = "itai-cloud-ops-tf-state"
-    key            = "dev/terraform.tfstate"
-    region         = "eu-central-1"
+    bucket = "itai-cloud-ops-tf-state"
+    key    = "dev/terraform.tfstate"
+    region = "eu-central-1"
     # dynamodb_table = "terraform-locks"
     use_lockfile = true
-    encrypt        = true
+    encrypt      = true
   }
 
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~> 5.0"
     }
   }
@@ -25,3 +25,25 @@ provider "aws" {
 module "networking" {
   source = "../../modules/networking"
 }
+
+module "compute" {
+  source    = "../../modules/compute"
+  vpc_id    = module.networking.vpc_id
+  subnet_id = module.networking.public_subnets[0]
+}
+
+module "monitoring" {
+  source       = "../../modules/monitoring"
+  instance_id  = module.compute.instance_id
+}
+
+module "healing" {
+  source      = "../../modules/healing"
+  instance_id = module.compute.instance_id
+  topic_arn   = module.monitoring.topic_arn
+}
+
+module "observability" {
+  source = "../../modules/observability"
+}
+
