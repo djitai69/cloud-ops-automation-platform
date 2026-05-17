@@ -27,23 +27,33 @@ module "networking" {
 }
 
 module "compute" {
-  source    = "../../modules/compute"
-  vpc_id    = module.networking.vpc_id
-  subnet_id = module.networking.public_subnets[0]
+  source      = "../../modules/compute"
+  vpc_id      = module.networking.vpc_id
+  subnet_id   = module.networking.public_subnets[0]
+  bucket_name = module.forensics.bucket_name
 }
 
 module "monitoring" {
-  source       = "../../modules/monitoring"
-  instance_id  = module.compute.instance_id
+  source      = "../../modules/monitoring"
+  instance_id = module.compute.instance_id
 }
 
 module "healing" {
   source      = "../../modules/healing"
   instance_id = module.compute.instance_id
   topic_arn   = module.monitoring.topic_arn
+  table_name  = module.observability.table_name
+  bucket_name = module.forensics.bucket_name
 }
 
 module "observability" {
   source = "../../modules/observability"
 }
 
+module "forensics" {
+  source = "../../modules/forensics"
+}
+
+module "dashboard" {
+  source = "../../modules/dashboard"
+}

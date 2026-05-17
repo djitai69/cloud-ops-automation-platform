@@ -38,10 +38,21 @@ resource "aws_iam_role_policy" "lambda_policy" {
         Action = [
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:Scan"
+          "dynamodb:Scan",
+          "ssm:SendCommand",
+          "ssm:GetCommandInvocation"
         ]
         Resource = "*"
         # Resource = "arn:aws:dynamodb:eu-central-1:*:table/cloud-ops-incidents"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject"
+        ]
+        Resource = "*"
+        # Resource = "arn:aws:s3:::itai-cloud-ops-forensics/*"
       }
     ]
   })
@@ -60,7 +71,8 @@ resource "aws_lambda_function" "healer" {
   environment {
     variables = {
       INSTANCE_ID = var.instance_id
-      TABLE       = "cloud-ops-incidents"
+      TABLE       = var.table_name
+      BUCKET      = var.bucket_name
     }
   }
 }

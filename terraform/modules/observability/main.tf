@@ -9,13 +9,13 @@ resource "aws_dynamodb_table" "incidents" {
   }
 
   attribute {
-    name = "status"
+    name = "state"
     type = "S"
   }
 
   global_secondary_index {
-    name            = "status-index"
-    hash_key        = "status"
+    name            = "state-index"
+    hash_key        = "state"
     projection_type = "ALL"
   }
 }

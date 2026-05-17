@@ -1,0 +1,25 @@
+body {
+  font-family: Arial;
+  margin: 40px;
+  background: #111;
+  color: white;
+}
+
+.card {
+  background: #222;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.reboot {
+  border-left: 5px solid orange;
+}
+
+.escalated {
+  border-left: 5px solid red;
+}
+
+.resolved {
+  border-left: 5px solid green;
+}

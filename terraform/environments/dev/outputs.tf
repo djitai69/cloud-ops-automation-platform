@@ -13,3 +13,7 @@ output "instance_id" {
 output "public_ip" {
   value = module.compute.public_ip
 }
+
+output "api_url" {
+  value = module.dashboard.api_url
+}

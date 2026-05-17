@@ -51,7 +51,10 @@ resource "aws_instance" "app" {
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
-              yum install -y python3
+              yum install -y python3 amazon-ssm-agent
+
+              systemctl enable amazon-ssm-agent
+              systemctl start amazon-ssm-agent
 
               cat > /home/ec2-user/app.py <<APP
               from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -92,6 +95,20 @@ resource "aws_iam_role" "ssm_role" {
 resource "aws_iam_role_policy_attachment" "ssm_core" {
   role       = aws_iam_role.ssm_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy" "s3_forensics" {
+  name = "cloud-ops-s3-forensics"
+  role = aws_iam_role.ssm_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["s3:PutObject"]
+      Resource = "arn:aws:s3:::${var.bucket_name}/*"
+    }]
+  })
 }
 
 resource "aws_iam_instance_profile" "ssm_profile" {

@@ -18,3 +18,8 @@ variable "allowed_ssh_cidrs" {
   default     = []
   description = "CIDR blocks permitted to reach port 22; empty disables SSH ingress"
 }
+
+variable "bucket_name" {
+  type        = string
+  description = "S3 bucket the instance is allowed to upload forensics reports to"
+}

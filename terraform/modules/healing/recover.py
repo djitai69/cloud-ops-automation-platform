@@ -6,7 +6,9 @@ import uuid
 
 ec2 = boto3.client("ec2")
 ddb = boto3.client("dynamodb")
+s3 = boto3.client("s3")
 
+BUCKET = os.environ["BUCKET"]
 INSTANCE_ID = os.environ["INSTANCE_ID"]
 TABLE = os.environ["TABLE"]
 
@@ -88,11 +90,33 @@ def lambda_handler(event, context):
             "incident_count": incident_count
         }
 
-    action = "reboot"
+    action = "pkill"
 
-    ec2.reboot_instances(
-        InstanceIds=[INSTANCE_ID]
+    ssm = boto3.client("ssm")
+
+    ssm.send_command(
+        InstanceIds=[INSTANCE_ID],
+        DocumentName="AWS-RunShellScript",
+        Parameters={
+            "commands": [
+                "mkdir -p /tmp/incident",
+                "date > /tmp/incident/time.txt",
+                "uptime > /tmp/incident/uptime.txt",
+                "free -m > /tmp/incident/memory.txt",
+                "df -h > /tmp/incident/disk.txt",
+                "df -i > /tmp/incident/inodes.txt",
+                "ss -s > /tmp/incident/network.txt",
+                "ps -eo pid,cmd,%cpu,%mem --sort=-%cpu | head -20 > /tmp/incident/processes.txt",
+                "journalctl -n 100 --no-pager > /tmp/incident/journal.txt",
+                "pkill yes || true",
+                f"tar -czf /tmp/{incident_id}.tar.gz /tmp/incident",
+                f"/usr/bin/aws s3 cp /tmp/{incident_id}.tar.gz s3://{BUCKET}/",
+                "echo upload-finished"
+            ]
+        }
     )
+
+    print(f"SSM remediation triggered for {INSTANCE_ID}")
 
     store_incident(
         incident_id,
@@ -101,11 +125,9 @@ def lambda_handler(event, context):
         action
     )
 
-    print(f"Reboot triggered for {INSTANCE_ID}")
-
     return {
         "status": action,
         "incident_count": incident_count
     }
-    
+
     
