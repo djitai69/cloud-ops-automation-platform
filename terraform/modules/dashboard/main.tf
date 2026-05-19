@@ -79,6 +79,13 @@ resource "aws_lambda_permission" "public_url" {
   function_url_auth_type = "NONE"
 }
 
+resource "aws_lambda_permission" "public_invoke" {
+  statement_id  = "AllowPublicInvokeFunction"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.api.function_name
+  principal     = "*"
+}
+
 resource "aws_s3_bucket_policy" "public_read" {
   bucket = aws_s3_bucket.frontend.id
 
