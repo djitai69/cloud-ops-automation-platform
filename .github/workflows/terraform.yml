@@ -42,3 +42,15 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
+
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          format: sarif
+          sarif_file: tfsec.sarif
+
+      - name: Upload tfsec SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: tfsec.sarif
