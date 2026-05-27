@@ -16,6 +16,10 @@ permissions:
   contents: read
   security-events: write
 
+concurrency:
+  group: terraform-dev
+  cancel-in-progress: false
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -53,6 +57,7 @@ jobs:
         run: terraform plan 
 
       - name: Run tfsec
+        if: always()
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
           format: sarif
