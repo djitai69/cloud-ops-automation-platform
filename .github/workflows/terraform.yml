@@ -9,6 +9,10 @@ on:
     paths:
       - 'terraform/**'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -27,9 +31,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: arn:aws:iam::307946654556:role/github-actions-terraform-role
+          aws-region: eu-central-1
 
       - name: Terraform Init
         run: terraform init

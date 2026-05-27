@@ -57,3 +57,8 @@ module "forensics" {
 module "dashboard" {
   source = "../../modules/dashboard"
 }
+
+module "github_oidc" {
+  source = "../../modules/github-oidc"
+}
+
