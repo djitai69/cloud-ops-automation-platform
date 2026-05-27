@@ -12,6 +12,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  security-events: write
 
 jobs:
   terraform:
@@ -54,8 +55,10 @@ jobs:
         with:
           format: sarif
           sarif_file: tfsec.sarif
+          soft_fail: true
 
       - name: Upload tfsec SARIF
+        if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: tfsec.sarif

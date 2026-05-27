@@ -43,7 +43,7 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: Upload Frontend
-        working-directory: dashboard-ui
+        working-directory: terraform/dashboard-ui
         run: |
           aws s3 cp . s3://itai-cloud-ops-dashboard \
             --recursive \
