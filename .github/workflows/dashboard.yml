@@ -4,7 +4,7 @@ name: Dashboard Deploy
 on:
   push:
     paths:
-      - 'dashboard-ui/**'
+      - 'terraform/dashboard-ui/**'
       - 'terraform/modules/dashboard/**'
       - '.github/workflows/dashboard.yml'
 
