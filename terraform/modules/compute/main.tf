@@ -24,24 +24,13 @@ resource "aws_security_group" "app" {
   }
 }
 
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-
-  owners = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-*x86_64"]
-  }
-}
-
 resource "aws_key_pair" "deployer" {
   key_name   = "cloud-ops-key"
   public_key = file("~/.ssh/cloud-ops-key.pub")
 }
 
 resource "aws_instance" "app" {
-  ami                    = data.aws_ami.amazon_linux.id
+  ami                    = "ami-01bc6061135ac4cb9"
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.app.id]
