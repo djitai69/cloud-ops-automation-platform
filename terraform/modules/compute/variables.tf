@@ -23,3 +23,8 @@ variable "bucket_name" {
   type        = string
   description = "S3 bucket the instance is allowed to upload forensics reports to"
 }
+
+variable "ssh_public_key" {
+  type        = string
+  description = "OpenSSH-formatted public key registered as the EC2 key pair"
+}

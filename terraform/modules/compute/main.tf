@@ -26,7 +26,7 @@ resource "aws_security_group" "app" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "cloud-ops-key"
-  public_key = file("~/.ssh/cloud-ops-key.pub")
+  public_key = var.ssh_public_key
 }
 
 resource "aws_instance" "app" {
@@ -35,7 +35,7 @@ resource "aws_instance" "app" {
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.app.id]
   key_name               = aws_key_pair.deployer.key_name
-  iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
+  iam_instance_profile   = aws_iam_instance_profile.ssm_profile.name
 
   user_data = <<-EOF
               #!/bin/bash

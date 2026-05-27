@@ -7,3 +7,7 @@
 
 # Crash logs
 crash.log
+
+# Local tfvars (may contain non-secret-but-private inputs)
+*.tfvars
+*.tfvars.json

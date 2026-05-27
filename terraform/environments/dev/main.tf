@@ -27,10 +27,11 @@ module "networking" {
 }
 
 module "compute" {
-  source      = "../../modules/compute"
-  vpc_id      = module.networking.vpc_id
-  subnet_id   = module.networking.public_subnets[0]
-  bucket_name = module.forensics.bucket_name
+  source         = "../../modules/compute"
+  vpc_id         = module.networking.vpc_id
+  subnet_id      = module.networking.public_subnets[0]
+  bucket_name    = module.forensics.bucket_name
+  ssh_public_key = var.ssh_public_key
 }
 
 module "monitoring" {

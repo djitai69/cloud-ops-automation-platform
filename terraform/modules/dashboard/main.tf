@@ -54,7 +54,7 @@ resource "aws_lambda_function" "api" {
   role          = aws_iam_role.api_role.arn
   runtime       = "python3.11"
   handler       = "app.lambda_handler"
-  filename = "${path.module}/dashboard-api/dashboard.zip"
+  filename      = "${path.module}/dashboard-api/dashboard.zip"
 
 
   source_code_hash = filebase64sha256("${path.module}/dashboard-api/dashboard.zip")
@@ -97,7 +97,7 @@ resource "aws_s3_bucket_policy" "public_read" {
         Effect    = "Allow"
         Principal = "*"
         Action    = ["s3:GetObject"]
-        Resource  = [
+        Resource = [
           "${aws_s3_bucket.frontend.arn}/*"
         ]
       }
